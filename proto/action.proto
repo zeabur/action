@@ -1,0 +1,50 @@
+syntax = "proto3";
+package action;
+
+option go_package = "github.com/zeabur/builder/zbaction/proto";
+
+message Action {
+	string id = 1;
+	repeated Job jobs = 2;
+	map<string, string> variables = 3;
+	repeated Requirement requirements = 4;
+}
+
+message Requirement {
+	// expr: the requirement expression to evaluate
+	string expr = 1;
+
+	// description: the description of the requirement
+	optional string description = 2;
+
+	// required: true means the action will fail if the requirement is not met
+	bool required = 3;
+}
+
+message Job {
+	string id = 1;
+	string run_on = 2;
+	repeated Step steps = 3;
+	map<string, string> variables = 4;
+}
+
+message Step {
+	string id = 1;
+	string name = 5;
+
+	oneof step {
+		CommandStep command = 2;
+		ProcStep proc = 3;
+	}
+
+	map<string, string> variables = 4;
+}
+
+message CommandStep {
+	repeated string command = 1;
+}
+
+message ProcStep {
+	string uses = 1;
+	map<string, string> with = 2;
+}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+package environment;
+
+option go_package = "github.com/zeabur/builder/zbaction/proto";
+
+message Environment {
+	Source source = 1;
+	// wip: Multiple environments (gateway needed)
+}
+
+message Source {
+	oneof provider {
+		GitHubSource github = 1;
+	}
+}
+
+message GitHubSource {
+	string owner = 1;
+	string repo = 2;
+	string branch = 3;
+	string access_token = 4;
+}
