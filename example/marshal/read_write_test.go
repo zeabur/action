@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zeabur/builder/zbaction"
-	"github.com/zeabur/builder/zbaction/example/marshal"
+	"github.com/zeabur/action"
+	"github.com/zeabur/action/example/marshal"
 )
 
 func TestReadWrite(t *testing.T) {

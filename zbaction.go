@@ -5,7 +5,7 @@
 // To use it:
 //
 //	import (
-//	 	"github.com/zeabur/builder/zbaction"
+//	 	"github.com/zeabur/action"
 //		_ "github/zeabur/builder/zbaction/procedures" /* builtin procedures */
 //	 	/* your procedures plugins */
 //	 )

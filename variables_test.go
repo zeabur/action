@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zeabur/builder/zbaction"
+	"github.com/zeabur/action"
 )
 
 func TestMapContainer_GetRawVariable(t *testing.T) {

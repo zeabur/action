@@ -1,7 +1,7 @@
 syntax = "proto3";
 package action;
 
-option go_package = "github.com/zeabur/builder/zbaction/proto";
+option go_package = "github.com/zeabur/action/proto";
 
 message Action {
 	string id = 1;

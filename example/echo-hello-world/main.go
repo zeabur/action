@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/zeabur/builder/zbaction"
-	_ "github.com/zeabur/builder/zbaction/procedures"
+	"github.com/zeabur/action"
+	_ "github.com/zeabur/action/procedures"
 )
 
 func main() {

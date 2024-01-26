@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/zeabur/builder/zbaction"
+	"github.com/zeabur/action"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

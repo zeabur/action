@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/zeabur/builder/zbaction"
+	"github.com/zeabur/action"
 )
 
 func init() {

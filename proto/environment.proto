@@ -1,7 +1,7 @@
 syntax = "proto3";
 package environment;
 
-option go_package = "github.com/zeabur/builder/zbaction/proto";
+option go_package = "github.com/zeabur/action/proto";
 
 message Environment {
 	Source source = 1;

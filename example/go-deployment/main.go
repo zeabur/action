@@ -5,11 +5,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/zeabur/builder/zbaction"
+	"github.com/zeabur/action"
 
-	_ "github.com/zeabur/builder/zbaction/procedures"
-	_ "github.com/zeabur/builder/zbaction/procedures/artifact"
-	_ "github.com/zeabur/builder/zbaction/procedures/golang"
+	_ "github.com/zeabur/action/procedures"
+	_ "github.com/zeabur/action/procedures/artifact"
+	_ "github.com/zeabur/action/procedures/golang"
 )
 
 func main() {

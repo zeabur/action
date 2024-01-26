@@ -3,7 +3,7 @@ package zbaction
 import (
 	"fmt"
 
-	"github.com/zeabur/builder/zbaction/proto"
+	"github.com/zeabur/action/proto"
 )
 
 func ActionToProto(action Action) (*proto.Action, error) {

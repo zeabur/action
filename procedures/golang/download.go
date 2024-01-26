@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/zeabur/builder/zbaction"
+	"github.com/zeabur/action"
 )
 
 func init() {

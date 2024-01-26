@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/zeabur/builder/zbaction"
-	actionProto "github.com/zeabur/builder/zbaction/proto"
+	"github.com/zeabur/action"
+	actionProto "github.com/zeabur/action/proto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
