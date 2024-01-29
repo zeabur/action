@@ -3,6 +3,7 @@ package zbaction
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/mitchellh/hashstructure/v2"
 )
@@ -15,9 +16,10 @@ type JobID = string
 type StepID = string
 
 type Action struct {
-	ID        ActionID
-	Variables map[string]string
-	Jobs      []Job
+	ID           ActionID
+	Variables    map[string]string
+	Jobs         []Job
+	Requirements []Requirement
 }
 
 func (a Action) String() string {
@@ -31,6 +33,28 @@ func (a Action) String() string {
 	}
 
 	return "<unknown action>"
+}
+
+type Requirement struct {
+	Expr        string
+	Description *string
+	Required    bool
+}
+
+func (r Requirement) String() string {
+	sb := strings.Builder{}
+
+	if r.Required {
+		sb.WriteString("* ")
+	}
+	sb.WriteString(r.Expr)
+	if r.Description != nil {
+		sb.WriteString(" (")
+		sb.WriteString(*r.Description)
+		sb.WriteString(")")
+	}
+
+	return sb.String()
 }
 
 type Job struct {

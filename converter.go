@@ -8,9 +8,18 @@ import (
 
 func ActionToProto(action Action) (*proto.Action, error) {
 	p := &proto.Action{
-		Id:        action.ID,
-		Jobs:      make([]*proto.Job, len(action.Jobs)),
-		Variables: action.Variables,
+		Id:           action.ID,
+		Jobs:         make([]*proto.Job, len(action.Jobs)),
+		Variables:    action.Variables,
+		Requirements: make([]*proto.Requirement, len(action.Requirements)),
+	}
+
+	for requirementIndex, requirement := range action.Requirements {
+		p.Requirements[requirementIndex] = &proto.Requirement{
+			Expr:        requirement.Expr,
+			Description: requirement.Description,
+			Required:    requirement.Required,
+		}
 	}
 
 	for jobIndex, job := range action.Jobs {
@@ -44,9 +53,18 @@ func ActionToProto(action Action) (*proto.Action, error) {
 
 func ActionFromProto(p *proto.Action) (Action, error) {
 	action := Action{
-		ID:        p.Id,
-		Jobs:      make([]Job, len(p.Jobs)),
-		Variables: p.Variables,
+		ID:           p.Id,
+		Jobs:         make([]Job, len(p.Jobs)),
+		Variables:    p.Variables,
+		Requirements: make([]Requirement, len(p.Requirements)),
+	}
+
+	for requirementIndex, requirement := range p.Requirements {
+		action.Requirements[requirementIndex] = Requirement{
+			Expr:        requirement.Expr,
+			Description: requirement.Description,
+			Required:    requirement.Required,
+		}
 	}
 
 	for jobIndex, job := range p.Jobs {
