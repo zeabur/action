@@ -60,7 +60,7 @@ func NewContextWriter(sc *StepContext, variable string, target io.Writer) io.Wri
 }
 
 func (cw *contextWriter) Close() error {
-	cw.sc.SetThisOutput(cw.variable, string(cw.bytesBuffer.Bytes()))
+	cw.sc.SetThisOutput(cw.variable, cw.bytesBuffer.String())
 	return nil
 }
 

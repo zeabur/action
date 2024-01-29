@@ -66,7 +66,7 @@ type ActionContext struct {
 	variables VariableContainer
 	action    *Action
 
-	cachedID *ActionID
+	cachedID *ActionID `exhaustruct:"optional"`
 }
 
 func (ac *ActionContext) ID() ActionID {
@@ -101,11 +101,11 @@ type JobContext struct {
 	output    map[StepID]StepOutput
 	variables VariableContainer
 
-	root *string
+	root *string `exhaustruct:"optional"`
 
 	// cache
 
-	cachedID *JobID
+	cachedID *JobID `exhaustruct:"optional"`
 }
 
 func (jc *JobContext) ID() JobID {
@@ -182,11 +182,6 @@ func (jc *JobContext) Run(ctx context.Context) error {
 	root, err := jc.GetRoot()
 	if err != nil {
 		return fmt.Errorf("get job root: %w", err)
-	}
-
-	type CleanupFnContext struct {
-		fn func() error
-		id StepID
 	}
 
 	cleanupStack := CleanupStack{}

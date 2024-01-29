@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 )
 
 func init() {
@@ -27,7 +27,7 @@ type WriteAction struct {
 	Content  zbaction.Argument[string]
 }
 
-func (w *WriteAction) Run(ctx context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
+func (w *WriteAction) Run(_ context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
 	outFilePath := path.Join(sc.Root(), w.Filename.Value(sc.ExpandString))
 	err := os.WriteFile(outFilePath, []byte(w.Content.Value(sc.ExpandString)), 0644)
 	if err != nil {

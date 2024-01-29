@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 	"github.com/zeabur/action/example/marshal"
 )
 

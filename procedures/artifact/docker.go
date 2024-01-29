@@ -14,7 +14,7 @@ import (
 	dockerfile "github.com/moby/buildkit/frontend/dockerfile/builder"
 	"github.com/moby/buildkit/util/progress/progressui"
 	"github.com/nwtgck/go-fakelish"
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 	"golang.org/x/sync/errgroup"
 )
 

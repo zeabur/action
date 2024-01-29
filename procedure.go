@@ -27,6 +27,7 @@ type procedureStepResolver struct {
 func NewProcedureStepResolver() ProcedureStepResolver {
 	return &procedureStepResolver{
 		registry: make(map[ProcStepName]ProcedureStepBuilder),
+		mutex:    sync.RWMutex{},
 	}
 }
 

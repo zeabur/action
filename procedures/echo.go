@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 )
 
 func init() {
@@ -19,7 +19,7 @@ type EchoAction struct {
 	Message zbaction.Argument[string]
 }
 
-func (i *EchoAction) Run(ctx context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
+func (i *EchoAction) Run(_ context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
 	fmt.Println(i.Message.Value(sc.ExpandString))
 	return nil, nil
 }

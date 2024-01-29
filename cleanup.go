@@ -5,7 +5,7 @@ package zbaction
 //
 // The zero value of CleanupStack is safe to use.
 type CleanupStack struct {
-	fn []CleanupFn
+	fn []CleanupFn `exhaustruct:"optional"`
 }
 
 func (cs *CleanupStack) Push(fn CleanupFn) {

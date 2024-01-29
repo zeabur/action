@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 )
 
 func TestMapContainer_GetRawVariable(t *testing.T) {
@@ -22,7 +22,7 @@ func TestMapContainer_GetRawVariable(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "${test}", v)
 
-	v, ok = mc.GetRawVariable("test3")
+	_, ok = mc.GetRawVariable("test3")
 	assert.False(t, ok)
 }
 
@@ -57,7 +57,7 @@ func TestVariableContainerWithParent_GetRawVariable(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "hi", v)
 
-	v, ok = mc.GetRawVariable("test5")
+	_, ok = mc.GetRawVariable("test5")
 	assert.False(t, ok)
 }
 
@@ -81,7 +81,7 @@ func TestVariableContainerWithParent_GetVariable(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "test12", v)
 
-	v, ok = mc.GetVariable("test4")
+	_, ok = mc.GetVariable("test4")
 	assert.False(t, ok)
 }
 
@@ -112,6 +112,6 @@ func TestVariableContainerWithParent_GetVariableWithParent(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "test23", v)
 
-	v, ok = mc.GetVariable("test4")
+	_, ok = mc.GetVariable("test4")
 	assert.False(t, ok)
 }

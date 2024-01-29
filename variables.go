@@ -58,7 +58,7 @@ func (m mapContainer) GetVariable(key string) (string, bool) {
 func (m variableContainerWithParent) GetRawVariable(key string) (string, bool) {
 	v, ok := m.this.GetRawVariable(key)
 	if ok {
-		return v, ok
+		return v, true
 	}
 	return m.parent.GetRawVariable(key)
 }
@@ -74,12 +74,12 @@ func (m variableContainerWithParent) GetVariable(key string) (string, bool) {
 
 func (v variableContainerWithExtraParameters) GetRawVariable(key string) (string, bool) {
 	if value, ok := v.parent.GetRawVariable(key); ok {
-		return value, ok
+		return value, true
 	}
 
 	if v.extra != nil {
 		if v, ok := v.extra[key]; ok {
-			return v, ok
+			return v, true
 		}
 	}
 

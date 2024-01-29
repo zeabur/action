@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/zeabur/action"
+	zbaction "github.com/zeabur/action"
 	_ "github.com/zeabur/action/procedures"
 )
 
