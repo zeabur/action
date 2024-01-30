@@ -16,4 +16,4 @@ COPY --from=golang-base /usr/local/go/ /opt/builder/go
 RUN mkdir -p /home/builder && mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 1777 "$GOPATH"
 
 # Copy the metadata
-COPY ./alpine-base.meta.json /meta.json
+COPY ./alpine-go.meta.json /meta.json
