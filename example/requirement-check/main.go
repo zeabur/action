@@ -101,9 +101,8 @@ func main() {
 		fmt.Println("check requirement", metadata.Name)
 		err := compiledAction.CheckRequirement(metadata.Metadata)
 		if err != nil {
-			panic(err)
+			fmt.Printf("%s's requirement not met: %s\n", metadata.Name, err.Error())
 		}
+		fmt.Printf("%s's requirement met\n", metadata.Name)
 	}
-
-	println("requirement met")
 }
