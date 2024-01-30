@@ -20,6 +20,7 @@ type Action struct {
 	Variables    map[string]string
 	Jobs         []Job
 	Requirements []Requirement
+	Metadata     map[string]string
 }
 
 func (a Action) String() string {

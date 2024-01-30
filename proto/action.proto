@@ -8,6 +8,7 @@ message Action {
 	repeated Job jobs = 2;
 	map<string, string> variables = 3;
 	repeated Requirement requirements = 4;
+	map<string, string> metadata = 5;
 }
 
 message Requirement {

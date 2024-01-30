@@ -12,6 +12,7 @@ func ActionToProto(action Action) (*proto.Action, error) {
 		Jobs:         make([]*proto.Job, len(action.Jobs)),
 		Variables:    action.Variables,
 		Requirements: make([]*proto.Requirement, len(action.Requirements)),
+		Metadata:     action.Metadata,
 	}
 
 	for requirementIndex, requirement := range action.Requirements {
@@ -55,6 +56,7 @@ func ActionFromProto(p *proto.Action) (Action, error) {
 		Jobs:         make([]Job, len(p.Jobs)),
 		Variables:    p.Variables,
 		Requirements: make([]Requirement, len(p.Requirements)),
+		Metadata:     p.Metadata,
 	}
 
 	for requirementIndex, requirement := range p.Requirements {
