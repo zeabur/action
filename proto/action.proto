@@ -19,8 +19,9 @@ message Requirement {
 }
 
 message Job {
+	reserved 2;
+
 	string id = 1;
-	string run_on = 2;
 	repeated Step steps = 3;
 	map<string, string> variables = 4;
 }

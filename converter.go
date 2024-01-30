@@ -24,7 +24,6 @@ func ActionToProto(action Action) (*proto.Action, error) {
 	for jobIndex, job := range action.Jobs {
 		pj := &proto.Job{
 			Id:        job.ID,
-			RunOn:     job.RunOn,
 			Steps:     make([]*proto.Step, len(job.Steps)),
 			Variables: job.Variables,
 		}
@@ -68,7 +67,6 @@ func ActionFromProto(p *proto.Action) (Action, error) {
 	for jobIndex, job := range p.Jobs {
 		j := Job{
 			ID:        job.Id,
-			RunOn:     job.RunOn,
 			Steps:     make([]Step, len(job.Steps)),
 			Variables: job.Variables,
 		}

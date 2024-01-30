@@ -55,7 +55,6 @@ func (r Requirement) String() string {
 
 type Job struct {
 	ID        JobID
-	RunOn     MachineName
 	Variables map[string]string
 	Steps     []Step
 }
