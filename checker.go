@@ -22,6 +22,7 @@ type CompiledRequirement struct {
 }
 
 type Environment struct {
+	Match        func(dependency string) bool                          `expr:"match"`
 	MatchVersion func(dependency string, constraintString string) bool `expr:"matchVersion"`
 }
 
@@ -52,6 +53,9 @@ func CompileActionRequirement(action Action) (*CompiledRequirement, error) {
 
 func (cr *CompiledRequirement) CheckRequirement(metadata map[string]any) error {
 	env := Environment{
+		Match: func(dependency string) bool {
+			return accessMeta(metadata, dependency) != nil
+		},
 		MatchVersion: func(dependency string, constraintString string) bool {
 			return matchSemver(metadata, dependency, constraintString)
 		},
