@@ -16,9 +16,6 @@ message Requirement {
 
 	// description: the description of the requirement
 	optional string description = 2;
-
-	// required: true means the action will fail if the requirement is not met
-	bool required = 3;
 }
 
 message Job {

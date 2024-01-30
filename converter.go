@@ -18,7 +18,6 @@ func ActionToProto(action Action) (*proto.Action, error) {
 		p.Requirements[requirementIndex] = &proto.Requirement{
 			Expr:        requirement.Expr,
 			Description: requirement.Description,
-			Required:    requirement.Required,
 		}
 	}
 
@@ -63,7 +62,6 @@ func ActionFromProto(p *proto.Action) (Action, error) {
 		action.Requirements[requirementIndex] = Requirement{
 			Expr:        requirement.Expr,
 			Description: requirement.Description,
-			Required:    requirement.Required,
 		}
 	}
 
