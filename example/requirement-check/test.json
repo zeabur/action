@@ -1,0 +1,13 @@
+{
+  "id": "test",
+  "requirements": [
+    {
+      "expr": "matchVersion('go', '>= 1.21')",
+      "description": "Go must >= 1.21"
+    },
+    {
+      "expr": "matchVersion('node', '> 18')",
+      "description": "Node must >18"
+    }
+  ]
+}
