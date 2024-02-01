@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 
 	"github.com/moby/buildkit/client"
 	dockerfile "github.com/moby/buildkit/frontend/dockerfile/builder"
@@ -42,11 +43,17 @@ COPY . .`
 			cache = "true"
 		}
 
+		push, ok := args["push"]
+		if !ok {
+			push = "false"
+		}
+
 		return &DockerArtifactAction{
 			Tag:        zbaction.NewArgumentStr(tag),
 			Context:    zbaction.NewArgumentStr(contextInput),
 			Dockerfile: zbaction.NewArgumentStr(dockerfileInput),
 			Cache:      zbaction.NewArgumentBool(cache),
+			Push:       zbaction.NewArgumentBool(push),
 		}, nil
 	})
 }
@@ -61,6 +68,9 @@ type DockerArtifactAction struct {
 	// Cache indicates whether to use cache when building the image.
 	// By default, it is true.
 	Cache zbaction.Argument[bool]
+	// Push indicates whether to push the built image to the registry.
+	// By default, it is false.
+	Push zbaction.Argument[bool]
 }
 
 var buildKitAddress = os.Getenv("BUILDKIT_HOST")
@@ -70,6 +80,7 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 	tag := d.Tag.Value(sc.ExpandString)
 	dockerFileContent := d.Dockerfile.Value(sc.ExpandString)
 	cache := d.Cache.Value(sc.ExpandString)
+	push := d.Push.Value(sc.ExpandString)
 
 	cleanupStack := zbaction.CleanupStack{}
 	cleanupFn := cleanupStack.WrapRun()
@@ -120,6 +131,7 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 				Type: client.ExporterDocker,
 				Attrs: map[string]string{
 					"name": tag,
+					"push": strconv.FormatBool(push),
 				},
 				Output: func(_ map[string]string) (io.WriteCloser, error) {
 					return artifactTar, nil
@@ -143,6 +155,9 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 	})
 	eg.Go(func() error {
 		d, err := progressui.NewDisplay(os.Stderr, progressui.AutoMode)
+		if err != nil {
+			return err
+		}
 		_, err = d.UpdateFrom(context.TODO(), ch)
 		return err
 	})
