@@ -105,7 +105,7 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 	}
 
 	// Open a docker.tar which is the artifact of this action.
-	artifactTarPath := path.Join(builderTmpDir, "docker.tar")
+	artifactTarPath := path.Join(builderTmpDir, "docker.tar.zstd")
 	artifactTar, err := os.OpenFile(artifactTarPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return cleanupFn, fmt.Errorf("open artifact tar: %w", err)
@@ -130,8 +130,9 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 			{
 				Type: client.ExporterDocker,
 				Attrs: map[string]string{
-					"name": tag,
-					"push": strconv.FormatBool(push),
+					"name":        tag,
+					"push":        strconv.FormatBool(push),
+					"compression": "zstd",
 				},
 				Output: func(_ map[string]string) (io.WriteCloser, error) {
 					return artifactTar, nil
