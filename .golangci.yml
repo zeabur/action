@@ -14,7 +14,16 @@ linters:
     - exhaustive
     - exhaustruct
 
+issues:
+  exclude-rules:
+    # converters
+    - path-except: converter
+      linters:
+        - exhaustive
+        - exhaustruct
+
 linters-settings:
-  exhaustruct:
-    exclude:
-      - 'github.com/moby/buildkit/client\..+'
+  revive:
+    rules:
+      - name: exported
+        disabled: true
