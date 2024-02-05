@@ -11,12 +11,15 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/moby/buildkit/client"
 	dockerfile "github.com/moby/buildkit/frontend/dockerfile/builder"
 	"github.com/moby/buildkit/util/progress/progressui"
 	"github.com/nwtgck/go-fakelish"
 	zbaction "github.com/zeabur/action"
 	"golang.org/x/sync/errgroup"
+
+	// buildkit & its modules
+	"github.com/moby/buildkit/client"
+	_ "github.com/moby/buildkit/client/connhelper/dockercontainer"
 )
 
 func init() {
