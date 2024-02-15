@@ -193,7 +193,6 @@ func (jc *JobContext) Run(ctx context.Context) error {
 		slog.Info("Running step", slog.String("step", step.HumanName()))
 
 		sc := &StepContext{
-			Context:    ctx,
 			id:         step.String(),
 			jobContext: jc,
 			root:       root,
@@ -220,7 +219,6 @@ func (jc *JobContext) Run(ctx context.Context) error {
 }
 
 type StepContext struct {
-	context.Context
 	id         StepID
 	jobContext *JobContext
 
