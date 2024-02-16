@@ -60,6 +60,10 @@ func (m mapContainer) GetVariable(key string) (string, bool) {
 }
 
 func (m mapContainer) ListRawVariables() map[string]string {
+	if m.values == nil {
+		return map[string]string{}
+	}
+
 	return m.values
 }
 
@@ -81,11 +85,18 @@ func (m variableContainerWithParent) GetVariable(key string) (string, bool) {
 }
 
 func (m variableContainerWithParent) ListRawVariables() map[string]string {
-	values := m.parent.ListRawVariables()
-	for k, v := range m.this.ListRawVariables() {
-		values[k] = v
+	parent := m.parent.ListRawVariables()
+	this := m.this.ListRawVariables()
+
+	merged := make(map[string]string, len(parent)+len(this))
+	for k, v := range parent {
+		merged[k] = v
 	}
-	return values
+	for k, v := range this {
+		merged[k] = v
+	}
+
+	return merged
 }
 
 func (v variableContainerWithExtraParameters) GetRawVariable(key string) (string, bool) {
@@ -112,11 +123,17 @@ func (v variableContainerWithExtraParameters) GetVariable(key string) (string, b
 }
 
 func (v variableContainerWithExtraParameters) ListRawVariables() map[string]string {
-	values := v.parent.ListRawVariables()
-	for k, v := range v.extra {
-		values[k] = v
+	parent := v.parent.ListRawVariables()
+	merged := make(map[string]string, len(v.extra)+len(parent))
+
+	for k, v := range parent {
+		merged[k] = v
 	}
-	return values
+	for k, v := range v.extra {
+		merged[k] = v
+	}
+
+	return merged
 }
 
 func expandValue(currentValue string, getNextExpandedVariableFn func(referencedKey string) (string, bool)) string {
@@ -136,6 +153,10 @@ func expandValue(currentValue string, getNextExpandedVariableFn func(referencedK
 type EnvironmentVariables map[string]string
 
 func ListEnvironmentVariables(vc VariableContainer) EnvironmentVariables {
+	if vc == nil {
+		return EnvironmentVariables{}
+	}
+
 	allVariables := vc.ListRawVariables()
 	filteredVariables := make(EnvironmentVariables)
 

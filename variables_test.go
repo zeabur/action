@@ -15,6 +15,7 @@ func TestMapContainer_GetRawVariable(t *testing.T) {
 	mc := zbaction.NewMapContainer(varExample)
 
 	v, ok := mc.GetRawVariable("test")
+
 	assert.True(t, ok)
 	assert.Equal(t, "test", v)
 
@@ -114,4 +115,43 @@ func TestVariableContainerWithParent_GetVariableWithParent(t *testing.T) {
 
 	_, ok = mc.GetVariable("test4")
 	assert.False(t, ok)
+}
+
+func TestListEnvironmentVariable(t *testing.T) {
+	mc := zbaction.NewMapContainer(map[string]string{
+		"test":     "test",
+		"test2":    "${test}",
+		"out.test": "1234",
+	})
+
+	lec := zbaction.ListEnvironmentVariables(mc)
+	assert.Len(t, lec, 2)
+	assert.Contains(t, lec, "test")
+	assert.Contains(t, lec, "test2")
+	assert.NotContains(t, lec, "out.test")
+}
+
+func TestListEnvironmentVariable_Nil(t *testing.T) {
+	lec := zbaction.ListEnvironmentVariables(nil)
+	assert.Len(t, lec, 0)
+}
+
+func TestListEnvironmentVariable_ParentNil(t *testing.T) {
+	lec := zbaction.ListEnvironmentVariables(
+		zbaction.NewVariableContainerWithExtraParameters(map[string]string{
+			"test": "1",
+		}, zbaction.NewMapContainer(nil)),
+	)
+
+	assert.Len(t, lec, 1)
+	assert.Equal(t, "1", lec["test"])
+}
+
+func TestEnvironmentVariables_ToList(t *testing.T) {
+	lec := zbaction.EnvironmentVariables{
+		"test":  "1",
+		"test2": "2",
+	}
+
+	assert.ElementsMatch(t, []string{"test=1", "test2=2"}, lec.ToList())
 }
