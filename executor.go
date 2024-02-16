@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"maps"
 	"os"
 	"strings"
 )
@@ -86,7 +87,13 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 // but it will not affect the original definition of the action.
 func WithRuntimeVariables(vars map[string]string) ExecutorOptionsFn {
 	return func(o *ExecutorOptions) {
-		o.RuntimeVariables = vars
+		if o.RuntimeVariables != nil {
+			for k, v := range vars {
+				o.RuntimeVariables[k] = v
+			}
+		} else {
+			o.RuntimeVariables = maps.Clone(vars)
+		}
 	}
 }
 
