@@ -97,6 +97,25 @@ func WithRuntimeVariables(vars map[string]string) ExecutorOptionsFn {
 	}
 }
 
+// WithCurrentEnvironmentVariable injects the current environment variables into the action.
+//
+// Useful if the application needs to access the environment variables.
+func WithCurrentEnvironmentVariable() ExecutorOptionsFn {
+	envs := os.Environ()
+	envMap := make(map[string]string, len(envs))
+
+	for _, env := range envs {
+		k, v, ok := strings.Cut(env, "=")
+		if !ok {
+			continue
+		}
+
+		envMap[k] = v
+	}
+
+	return WithRuntimeVariables(envMap)
+}
+
 type ActionContext struct {
 	variables VariableContainer
 	action    *Action
