@@ -15,6 +15,7 @@ import (
 	"github.com/moby/buildkit/util/progress/progressui"
 	"github.com/nwtgck/go-fakelish"
 	zbaction "github.com/zeabur/action"
+	"github.com/zeabur/action/procedures/procvariables"
 	"golang.org/x/sync/errgroup"
 
 	// buildkit & its modules
@@ -76,8 +77,6 @@ type DockerArtifactAction struct {
 	Push zbaction.Argument[bool]
 }
 
-var buildKitAddress = os.Getenv("BUILDKIT_HOST")
-
 func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
 	contextDirectory := d.Context.Value(sc.ExpandString)
 	tag := d.Tag.Value(sc.ExpandString)
@@ -88,7 +87,8 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 	cleanupStack := zbaction.CleanupStack{}
 	cleanupFn := cleanupStack.WrapRun()
 
-	if buildKitAddress == "" {
+	buildKitAddress, ok := sc.VariableContainer().GetVariable(procvariables.VarBuildkitHostKey)
+	if !ok || buildKitAddress == "" {
 		return cleanupFn, errors.New("BUILDKIT_HOST is not set")
 	}
 
