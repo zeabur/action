@@ -133,9 +133,11 @@ func expandValue(currentValue string, getNextExpandedVariableFn func(referencedK
 	})
 }
 
-func ListEnvironmentVariables(vc VariableContainer) map[string]string {
+type EnvironmentVariables map[string]string
+
+func ListEnvironmentVariables(vc VariableContainer) EnvironmentVariables {
 	allVariables := vc.ListVariables()
-	filteredVariables := make(map[string]string)
+	filteredVariables := make(EnvironmentVariables)
 
 	for key, value := range allVariables {
 		// if key contains `.`, we consider it as an internal variable and skip it
@@ -147,4 +149,12 @@ func ListEnvironmentVariables(vc VariableContainer) map[string]string {
 	}
 
 	return filteredVariables
+}
+
+func (v EnvironmentVariables) ToList() []string {
+	var list []string
+	for k, v := range v {
+		list = append(list, k+"="+v)
+	}
+	return list
 }
