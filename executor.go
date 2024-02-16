@@ -11,10 +11,28 @@ import (
 type StepsOutputMap map[StepID]StepOutput
 type StepOutput = map[string]any
 
-func RunAction(ctx context.Context, action Action) error {
+type ExecutorOptionsFn func(*ExecutorOptions)
+type ExecutorOptions struct {
+	RuntimeVariables map[string]string
+}
+
+func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn) error {
 	slog.Info("Running action", slog.String("action", action.String()))
+
+	executorOptions := ExecutorOptions{
+		RuntimeVariables: nil,
+	}
+	for _, fn := range options {
+		fn(&executorOptions)
+	}
+
+	variables := NewMapContainer(action.Variables)
+	if len(executorOptions.RuntimeVariables) > 0 {
+		variables = NewVariableContainerWithExtraParameters(executorOptions.RuntimeVariables, variables)
+	}
+
 	ac := &ActionContext{
-		variables: NewMapContainer(action.Variables),
+		variables: variables,
 		action:    &action,
 	}
 
@@ -60,6 +78,16 @@ func RunAction(ctx context.Context, action Action) error {
 	}
 
 	return nil
+}
+
+// WithRuntimeVariables injects custom runtime variables into the action.
+//
+// Its behavior is similar to adding variables to the Variables of the action yourself,
+// but it will not affect the original definition of the action.
+func WithRuntimeVariables(vars map[string]string) ExecutorOptionsFn {
+	return func(o *ExecutorOptions) {
+		o.RuntimeVariables = vars
+	}
 }
 
 type ActionContext struct {
