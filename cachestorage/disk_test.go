@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/psanford/memfs"
+	"github.com/stretchr/testify/assert"
 	"github.com/zeabur/action/cachestorage"
-	"gotest.tools/v3/assert"
 )
 
 func TestMain(m *testing.M) {

@@ -3,7 +3,7 @@ package zbaction
 import (
 	"testing"
 
-	"gotest.tools/v3/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAccessMeta(t *testing.T) {
@@ -15,7 +15,7 @@ func TestAccessMeta(t *testing.T) {
 	}
 
 	assert.Equal(t, "1.21", accessMeta(meta, "sdk.go"))
-	assert.DeepEqual(t, map[string]any{
+	assert.ElementsMatch(t, map[string]any{
 		"go": "1.21",
 	}, accessMeta(meta, "sdk"))
 	assert.Equal(t, "alpine", accessMeta(meta, "base"))
