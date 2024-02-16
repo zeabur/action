@@ -8,7 +8,7 @@ import (
 type VariableContainer interface {
 	GetRawVariable(key string) (string, bool)
 	GetVariable(key string) (string, bool)
-	ListVariables() map[string]string
+	ListRawVariables() map[string]string
 }
 
 type mapContainer struct {
@@ -59,7 +59,7 @@ func (m mapContainer) GetVariable(key string) (string, bool) {
 	return expandValue(v, m.GetVariable), true
 }
 
-func (m mapContainer) ListVariables() map[string]string {
+func (m mapContainer) ListRawVariables() map[string]string {
 	return m.values
 }
 
@@ -80,9 +80,9 @@ func (m variableContainerWithParent) GetVariable(key string) (string, bool) {
 	return expandValue(v, m.GetVariable), true
 }
 
-func (m variableContainerWithParent) ListVariables() map[string]string {
-	values := m.parent.ListVariables()
-	for k, v := range m.this.ListVariables() {
+func (m variableContainerWithParent) ListRawVariables() map[string]string {
+	values := m.parent.ListRawVariables()
+	for k, v := range m.this.ListRawVariables() {
 		values[k] = v
 	}
 	return values
@@ -111,8 +111,8 @@ func (v variableContainerWithExtraParameters) GetVariable(key string) (string, b
 	return expandValue(value, v.GetVariable), true
 }
 
-func (v variableContainerWithExtraParameters) ListVariables() map[string]string {
-	values := v.parent.ListVariables()
+func (v variableContainerWithExtraParameters) ListRawVariables() map[string]string {
+	values := v.parent.ListRawVariables()
 	for k, v := range v.extra {
 		values[k] = v
 	}
@@ -136,7 +136,7 @@ func expandValue(currentValue string, getNextExpandedVariableFn func(referencedK
 type EnvironmentVariables map[string]string
 
 func ListEnvironmentVariables(vc VariableContainer) EnvironmentVariables {
-	allVariables := vc.ListVariables()
+	allVariables := vc.ListRawVariables()
 	filteredVariables := make(EnvironmentVariables)
 
 	for key, value := range allVariables {
@@ -145,7 +145,7 @@ func ListEnvironmentVariables(vc VariableContainer) EnvironmentVariables {
 			continue
 		}
 
-		filteredVariables[strings.ToUpper(key)] = value
+		filteredVariables[strings.ToUpper(key)] = expandValue(value, vc.GetVariable)
 	}
 
 	return filteredVariables
