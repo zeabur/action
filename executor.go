@@ -2,11 +2,14 @@ package zbaction
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"maps"
 	"os"
 	"strings"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type StepsOutputMap map[StepID]StepOutput
@@ -42,9 +45,10 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 		id JobID
 	}
 
-	jobCleanupFn := make([]CleanupFnContext, 0, len(action.Jobs))
+	// we times len(action.Jobs) for 2 to prevent potential deadlock
+	jobCleanupFn := make(chan CleanupFnContext, len(action.Jobs)*2)
 	defer func() {
-		for _, cleanup := range jobCleanupFn {
+		for cleanup := range jobCleanupFn {
 			if cleanup.fn == nil {
 				continue
 			}
@@ -57,26 +61,46 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 		}
 	}()
 
+	eg, ectx := errgroup.WithContext(ctx)
+
 	for _, job := range action.Jobs {
 		job := job
-		jc := &JobContext{
-			actionContext: ac,
-			job:           &job,
-			output:        make(StepsOutputMap),
-			variables:     NewMapContainer(job.Variables),
-		}
-		if err := jc.Run(ctx); err != nil {
-			slog.Error("Failed to run job",
-				slog.String("job", job.String()),
-				slog.String("error", err.Error()))
-			return fmt.Errorf("failed to run job %s: %w", job.String(), err)
-		}
 
-		jobCleanupFn = append(jobCleanupFn, CleanupFnContext{
-			fn: jc.Cleanup,
-			id: job.ID,
+		eg.Go(func() error {
+			jc := &JobContext{
+				actionContext: ac,
+				job:           &job,
+				output:        make(StepsOutputMap),
+				variables:     NewMapContainer(job.Variables),
+			}
+			defer func(jc *JobContext, job Job) {
+				jobCleanupFn <- CleanupFnContext{
+					fn: jc.Cleanup,
+					id: job.ID,
+				}
+			}(jc, job)
+
+			if err := jc.Run(ectx); err != nil {
+				if errors.Is(err, context.Canceled) {
+					return err // cancelled
+				}
+
+				slog.Error("Failed to run job",
+					slog.String("job", job.String()),
+					slog.String("error", err.Error()))
+				return fmt.Errorf("failed to run job %s: %w", job.String(), err)
+			}
+
+			return nil
 		})
 	}
+
+	if err := eg.Wait(); err != nil {
+		slog.Error("Failed to run action",
+			slog.String("action", action.String()),
+			slog.String("error", err.Error()))
+	}
+	close(jobCleanupFn)
 
 	return nil
 }
