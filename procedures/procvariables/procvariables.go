@@ -22,5 +22,10 @@ func WithProcVariables(key string, value string) zbaction.ExecutorOptionsFn {
 
 // WithEnvBuildkitHost injects the buildkit address from environment variable into the action.
 func WithEnvBuildkitHost() zbaction.ExecutorOptionsFn {
-	return WithProcVariables(VarBuildkitHostKey, os.Getenv(VarBuildkitHostKey))
+	host := os.Getenv("BUILDKIT_HOST")
+	if host == "" {
+		panic("buildkit host is not set")
+	}
+
+	return WithProcVariables(VarBuildkitHostKey, host)
 }
