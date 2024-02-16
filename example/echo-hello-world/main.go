@@ -35,7 +35,7 @@ func main() {
 					{
 						Name: "Print hello world with procedure",
 						RunnableStep: zbaction.ProcStep{
-							Uses: "builtin/echo",
+							Uses: "action/echo",
 							With: zbaction.ProcStepArgs{
 								"message": "hello world from procedure!",
 							},
