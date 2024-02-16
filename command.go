@@ -27,6 +27,7 @@ func (c CommandStep) Run(ctx context.Context, sc *StepContext) (CleanupFn, error
 	cmd.Dir = sc.Root()
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
+	cmd.Env = ListEnvironmentVariables(sc.VariableContainer()).ToList()
 
 	if err := cmd.Run(); err != nil {
 		return nil, err
