@@ -10,6 +10,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/expr-lang/expr"
 	"github.com/expr-lang/expr/vm"
+	"github.com/zeabur/action/environment"
 )
 
 var ErrRequirementNotMet = errors.New("requirement not met")
@@ -51,13 +52,13 @@ func CompileActionRequirement(action Action) (*CompiledRequirement, error) {
 	return cr, nil
 }
 
-func (cr *CompiledRequirement) CheckRequirement(metadata map[string]any) error {
+func (cr *CompiledRequirement) CheckRequirement(softwareList environment.SoftwareList) error {
 	env := Environment{
 		Match: func(dependency string) bool {
-			return accessMeta(metadata, dependency) != nil
+			return accessMapByDot(softwareList, dependency) != nil
 		},
 		MatchVersion: func(dependency string, constraintString string) bool {
-			return matchSemver(metadata, dependency, constraintString)
+			return matchSemver(softwareList, dependency, constraintString)
 		},
 	}
 
@@ -83,8 +84,8 @@ func (cr *CompiledRequirement) CheckRequirement(metadata map[string]any) error {
 	return nil
 }
 
-func matchSemver(meta map[string]any, dependency string, constraintString string) bool {
-	dependencyVersionRaw := accessMeta(meta, dependency)
+func matchSemver(softwareList environment.SoftwareList, dependency string, constraintString string) bool {
+	dependencyVersionRaw := accessMapByDot(softwareList, dependency)
 	if dependencyVersionRaw == nil {
 		slog.Error("dependency not found", slog.String("dependency", dependency))
 		return false
@@ -114,12 +115,12 @@ func matchSemver(meta map[string]any, dependency string, constraintString string
 	return constraint.Check(version)
 }
 
-func accessMeta(meta map[string]any, key string) any {
+func accessMapByDot[T any](input map[string]T, key string) any {
 	keys := strings.Split(key, ".")
-	value := reflect.ValueOf(meta)
+	value := reflect.ValueOf(input)
 
 	for i, key := range keys {
-		if meta == nil {
+		if input == nil {
 			return nil
 		}
 

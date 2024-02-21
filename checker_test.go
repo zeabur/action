@@ -4,21 +4,15 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/zeabur/action/environment"
 )
 
 func TestAccessMeta(t *testing.T) {
-	meta := map[string]any{
-		"sdk": map[string]any{
-			"go": "1.21",
-		},
-		"base": "alpine",
+	softwareList := environment.SoftwareList{
+		"go": "1.21",
 	}
 
-	assert.Equal(t, "1.21", accessMeta(meta, "sdk.go"))
-	assert.ElementsMatch(t, map[string]any{
-		"go": "1.21",
-	}, accessMeta(meta, "sdk"))
-	assert.Equal(t, "alpine", accessMeta(meta, "base"))
-	assert.Equal(t, nil, accessMeta(meta, "sdk.node"))
-	assert.Equal(t, nil, accessMeta(meta, "sdk.go.version"))
+	assert.Equal(t, "1.21", accessMapByDot(softwareList, "go"))
+	assert.Equal(t, nil, accessMapByDot(softwareList, "node"))
+	assert.Equal(t, nil, accessMapByDot(softwareList, "go.version"))
 }
