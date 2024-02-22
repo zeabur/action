@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1
-	github.com/expr-lang/expr v1.16.0
+	github.com/expr-lang/expr v1.16.1
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/mitchellh/hashstructure/v2 v2.0.2
 	github.com/moby/buildkit v0.13.0-rc1
