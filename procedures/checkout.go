@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	zbaction "github.com/zeabur/action"
 )
 
@@ -26,20 +27,34 @@ func init() {
 				}
 				return 1
 			}),
+			AuthUsername: zbaction.NewArgumentStr(args["authUsername"]),
+			AuthPassword: zbaction.NewArgumentStr(args["authPassword"]),
 		}, nil
 	})
 }
 
 type CheckoutAction struct {
-	URL    zbaction.Argument[string]
-	Branch zbaction.Argument[string]
-	Depth  zbaction.Argument[int]
+	URL          zbaction.Argument[string]
+	Branch       zbaction.Argument[string]
+	Depth        zbaction.Argument[int]
+	AuthUsername zbaction.Argument[string]
+	AuthPassword zbaction.Argument[string]
 }
 
 func (i *CheckoutAction) Run(ctx context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
 	url := i.URL.Value(sc.ExpandString)
 	branch := i.Branch.Value(sc.ExpandString)
 	depth := i.Depth.Value(sc.ExpandString)
+	authUsername := i.AuthUsername.Value(sc.ExpandString)
+	authPassword := i.AuthPassword.Value(sc.ExpandString)
+
+	var auth *http.BasicAuth
+	if authUsername != "" && authPassword != "" {
+		auth = &http.BasicAuth{
+			Username: authUsername,
+			Password: authPassword,
+		}
+	}
 
 	_, err := git.PlainCloneContext(
 		ctx,
@@ -52,6 +67,7 @@ func (i *CheckoutAction) Run(ctx context.Context, sc *zbaction.StepContext) (zba
 			ReferenceName:     plumbing.ReferenceName("refs/heads/" + branch),
 			SingleBranch:      true,
 			RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+			Auth:              auth,
 		},
 	)
 
