@@ -88,19 +88,22 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 				slog.Error("Failed to run job",
 					slog.String("job", job.String()),
 					slog.String("error", err.Error()))
-				return fmt.Errorf("failed to run job %s: %w", job.String(), err)
+				return fmt.Errorf("run job %s: %w", job.String(), err)
 			}
 
 			return nil
 		})
 	}
 
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	close(jobCleanupFn)
+
+	if err != nil {
 		slog.Error("Failed to run action",
 			slog.String("action", action.String()),
 			slog.String("error", err.Error()))
+		return fmt.Errorf("run action %s: %w", action.String(), err)
 	}
-	close(jobCleanupFn)
 
 	return nil
 }
