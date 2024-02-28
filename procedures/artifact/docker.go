@@ -14,6 +14,7 @@ import (
 	dockerfile "github.com/moby/buildkit/frontend/dockerfile/builder"
 	"github.com/moby/buildkit/util/progress/progressui"
 	"github.com/nwtgck/go-fakelish"
+	"github.com/tonistiigi/fsutil"
 	zbaction "github.com/zeabur/action"
 	"github.com/zeabur/action/procedures/procvariables"
 	"golang.org/x/sync/errgroup"
@@ -142,6 +143,15 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 		frontendAttrs["no-cache"] = ""
 	}
 
+	contextFS, err := fsutil.NewFS(contextDirectory)
+	if err != nil {
+		return cleanupFn, fmt.Errorf("open context directory: %w", err)
+	}
+	dockerfileFS, err := fsutil.NewFS(filepath.Dir(dockerfilePath))
+	if err != nil {
+		return cleanupFn, fmt.Errorf("open dockerfile directory: %w", err)
+	}
+
 	solveOpt := client.SolveOpt{
 		Exports: []client.ExportEntry{
 			{
@@ -154,9 +164,9 @@ func (d DockerArtifactAction) Run(ctx context.Context, sc *zbaction.StepContext)
 				Output: outFn,
 			},
 		},
-		LocalDirs: map[string]string{
-			"context":    contextDirectory,
-			"dockerfile": filepath.Dir(dockerfilePath),
+		LocalMounts: map[string]fsutil.FS{
+			"context":    contextFS,
+			"dockerfile": dockerfileFS,
 		},
 		Frontend:      "dockerfile.v0",
 		FrontendAttrs: frontendAttrs,
