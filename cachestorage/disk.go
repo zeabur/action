@@ -134,7 +134,7 @@ func (c *cachedDiskFile) Extract(dst string) error {
 			return fmt.Errorf("copy: %w", err)
 		}
 
-		err = w.Close()
+		_ = w.Close()
 	}
 
 	return nil

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	zbaction "github.com/zeabur/action"
+	"github.com/zeabur/action/environment"
 	"github.com/zeabur/action/proto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -16,7 +17,7 @@ type pair struct {
 	Name string
 
 	MetadataPath string
-	Metadata     map[string]any
+	Metadata     environment.SoftwareList
 }
 
 type metadata []pair
@@ -46,7 +47,7 @@ func (m *metadata) Set(s string) error {
 		return err
 	}
 
-	var md map[string]any
+	var md environment.SoftwareList
 	err = json.NewDecoder(f).Decode(&md)
 	if err != nil {
 		return err
