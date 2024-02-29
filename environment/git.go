@@ -23,11 +23,11 @@ func (g Git) Version() (string, bool) {
 	if err == nil {
 		// git version 2.33.0
 		version, ok := strings.CutPrefix(string(out), "git version ")
-		if ok {
+		if !ok {
 			return strings.TrimSpace(version), true
-		} else {
-			slog.Debug("failed to extract Git version", "output", string(out))
 		}
+
+		slog.Debug("failed to extract Git version", "output", string(out))
 	} else {
 		slog.Debug("failed to get Git version", "error", err)
 	}

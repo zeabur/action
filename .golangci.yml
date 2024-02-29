@@ -13,6 +13,7 @@ linters:
     - staticcheck
     - exhaustive
     - exhaustruct
+    - revive
 
 issues:
   exclude-rules:
@@ -21,9 +22,3 @@ issues:
       linters:
         - exhaustive
         - exhaustruct
-
-linters-settings:
-  revive:
-    rules:
-      - name: exported
-        disabled: true

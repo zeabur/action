@@ -27,9 +27,9 @@ func (g Golang) Version() (string, bool) {
 
 		if len(matches) > 1 {
 			return string(matches[1]), true
-		} else {
-			slog.Debug("failed to extract Golang version", "output", string(out))
 		}
+
+		slog.Debug("failed to extract Golang version", "output", string(out))
 	} else {
 		slog.Debug("failed to get Python version", "error", err)
 	}

@@ -25,9 +25,8 @@ func (u Ubuntu) Version() (string, bool) {
 		version, ok := strings.CutPrefix(string(out), "Release:")
 		if ok {
 			return strings.TrimSpace(version), true
-		} else {
-			slog.Debug("failed to extract Ubuntu version", "output", string(out))
 		}
+		slog.Debug("failed to extract Ubuntu version", "output", string(out))
 	} else {
 		slog.Debug("failed to get Ubuntu version", "error", err)
 	}

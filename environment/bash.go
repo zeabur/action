@@ -30,12 +30,11 @@ func (b Bash) Version() (string, bool) {
 		semver, _, ok := strings.Cut(string(out), "(")
 		if ok {
 			return semver, true
-		} else {
-			return strings.TrimSpace(string(out)), true
 		}
-	} else {
-		slog.Debug("failed to get bash version", "error", err)
+
+		return strings.TrimSpace(string(out)), true
 	}
 
+	slog.Debug("failed to get bash version", "error", err)
 	return "", false
 }

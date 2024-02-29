@@ -26,9 +26,8 @@ func (p Python) Version() (string, bool) {
 
 		if ok {
 			return strings.TrimSpace(version), true
-		} else {
-			slog.Debug("failed to extract Python version", "output", string(out))
 		}
+		slog.Debug("failed to extract Python version", "output", string(out))
 	} else {
 		slog.Debug("failed to get Python version", "error", err)
 	}

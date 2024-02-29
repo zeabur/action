@@ -22,9 +22,8 @@ func (m MacOS) Version() (string, bool) {
 	out, err := cmd.Output()
 	if err == nil {
 		return string(bytes.TrimSpace(out)), true
-	} else {
-		slog.Debug("failed to get macOS version", "error", err)
 	}
 
+	slog.Debug("failed to get macOS version", "error", err)
 	return "", false
 }

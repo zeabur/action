@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"maps"
 	"os"
@@ -18,6 +19,8 @@ type StepOutput = map[string]any
 type ExecutorOptionsFn func(*ExecutorOptions)
 type ExecutorOptions struct {
 	RuntimeVariables map[string]string
+	Stdout           io.Writer
+	Stderr           io.Writer
 }
 
 func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn) error {
@@ -25,6 +28,8 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 
 	executorOptions := ExecutorOptions{
 		RuntimeVariables: nil,
+		Stdout:           os.Stdout,
+		Stderr:           os.Stderr,
 	}
 	for _, fn := range options {
 		fn(&executorOptions)
@@ -143,9 +148,26 @@ func WithCurrentEnvironmentVariable() ExecutorOptionsFn {
 	return WithRuntimeVariables(envMap)
 }
 
+// WithCustomStdout injects a custom stdout writer into the action.
+func WithCustomStdout(w io.Writer) ExecutorOptionsFn {
+	return func(o *ExecutorOptions) {
+		o.Stdout = w
+	}
+}
+
+// WithCustomStderr injects a custom stderr writer into the action.
+func WithCustomStderr(w io.Writer) ExecutorOptionsFn {
+	return func(o *ExecutorOptions) {
+		o.Stderr = w
+	}
+}
+
 type ActionContext struct {
 	variables VariableContainer
 	action    *Action
+
+	stdout io.Writer
+	stderr io.Writer
 
 	cachedID *ActionID `exhaustruct:"optional"`
 }
@@ -173,6 +195,11 @@ func (ac *ActionContext) GetVariable(key string) (string, bool) {
 
 func (ac *ActionContext) GetRawVariable(key string) (string, bool) {
 	return ac.VariableContainer().GetRawVariable(key)
+}
+
+// GetWriter returns the general stdout and stderr writer for the action.
+func (ac *ActionContext) GetWriter() (io.Writer, io.Writer) {
+	return ac.stdout, ac.stderr
 }
 
 type JobContext struct {
