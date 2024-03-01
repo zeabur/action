@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io"
-	"os"
 	"os/exec"
 
 	"github.com/samber/lo"
@@ -15,8 +14,10 @@ type CommandStep struct {
 }
 
 func (c CommandStep) Run(ctx context.Context, sc *StepContext) (CleanupFn, error) {
-	stdout := NewContextWriter(sc, "stdout", os.Stdout)
-	stderr := NewContextWriter(sc, "stderr", os.Stderr)
+	stdoutWriter, stderrWriter := sc.GetWriter()
+
+	stdout := NewContextWriter(sc, "stdout", stdoutWriter)
+	stderr := NewContextWriter(sc, "stderr", stderrWriter)
 
 	// expand command
 	expandedCommand := lo.Map(c.Command, func(s string, _ int) string {

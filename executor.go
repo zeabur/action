@@ -19,6 +19,7 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 	slog.Info("Running action", slog.String("action", action.String()))
 
 	executorOptions := ExecutorOptions{
+		/* defaults */
 		RuntimeVariables: nil,
 		Stdout:           os.Stdout,
 		Stderr:           os.Stderr,
@@ -339,6 +340,8 @@ func (sc *StepContext) ExpandString(s string) string {
 }
 
 // GetWriter returns the general stdout and stderr writer for the action.
+//
+// The first return value is the stdout writer, and the second return value is the stderr writer.
 func (sc *StepContext) GetWriter() (io.Writer, io.Writer) {
 	return sc.jobContext.actionContext.stdout, sc.jobContext.actionContext.stderr
 }
