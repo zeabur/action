@@ -41,8 +41,6 @@ type CheckoutAction struct {
 }
 
 func (i *CheckoutAction) Run(ctx context.Context, sc *zbaction.StepContext) (zbaction.CleanupFn, error) {
-	_, stderr := sc.GetWriter()
-
 	url := i.URL.Value(sc.ExpandString)
 	branch := i.Branch.Value(sc.ExpandString)
 	depth := i.Depth.Value(sc.ExpandString)
@@ -63,7 +61,7 @@ func (i *CheckoutAction) Run(ctx context.Context, sc *zbaction.StepContext) (zba
 		false,
 		&git.CloneOptions{
 			URL:               url,
-			Progress:          stderr,
+			Progress:          sc.Stderr(),
 			Depth:             depth,
 			ReferenceName:     plumbing.ReferenceName("refs/heads/" + branch),
 			SingleBranch:      true,

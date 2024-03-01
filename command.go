@@ -14,10 +14,8 @@ type CommandStep struct {
 }
 
 func (c CommandStep) Run(ctx context.Context, sc *StepContext) (CleanupFn, error) {
-	stdoutWriter, stderrWriter := sc.GetWriter()
-
-	stdout := NewContextWriter(sc, "stdout", stdoutWriter)
-	stderr := NewContextWriter(sc, "stderr", stderrWriter)
+	stdout := NewContextWriter(sc, "stdout", sc.Stdout())
+	stderr := NewContextWriter(sc, "stderr", sc.Stderr())
 
 	// expand command
 	expandedCommand := lo.Map(c.Command, func(s string, _ int) string {

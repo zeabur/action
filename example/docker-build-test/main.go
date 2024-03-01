@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"log/slog"
+	"os"
 
 	zbaction "github.com/zeabur/action"
 	_ "github.com/zeabur/action/procedures"
@@ -10,6 +12,11 @@ import (
 )
 
 func main() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	})))
+
 	err := zbaction.RunAction(context.TODO(), zbaction.Action{
 		Jobs: []zbaction.Job{
 			{

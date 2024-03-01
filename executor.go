@@ -339,9 +339,12 @@ func (sc *StepContext) ExpandString(s string) string {
 	})
 }
 
-// GetWriter returns the general stdout and stderr writer for the action.
-//
-// The first return value is the stdout writer, and the second return value is the stderr writer.
-func (sc *StepContext) GetWriter() (io.Writer, io.Writer) {
-	return sc.jobContext.actionContext.stdout, sc.jobContext.actionContext.stderr
+// Stdout gets the user-specified stdout writer of this step.
+func (sc *StepContext) Stdout() io.Writer {
+	return sc.jobContext.actionContext.stdout
+}
+
+// Stderr gets the user-specified stderr writer of this step.
+func (sc *StepContext) Stderr() io.Writer {
+	return sc.jobContext.actionContext.stderr
 }
