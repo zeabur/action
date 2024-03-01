@@ -140,11 +140,6 @@ func (ac *ActionContext) GetRawVariable(key string) (string, bool) {
 	return ac.VariableContainer().GetRawVariable(key)
 }
 
-// GetWriter returns the general stdout and stderr writer for the action.
-func (ac *ActionContext) GetWriter() (io.Writer, io.Writer) {
-	return ac.stdout, ac.stderr
-}
-
 type JobContext struct {
 	actionContext *ActionContext
 	job           *Job
@@ -341,4 +336,9 @@ func (sc *StepContext) ExpandString(s string) string {
 
 		return ""
 	})
+}
+
+// GetWriter returns the general stdout and stderr writer for the action.
+func (sc *StepContext) GetWriter() (io.Writer, io.Writer) {
+	return sc.jobContext.actionContext.stdout, sc.jobContext.actionContext.stderr
 }
