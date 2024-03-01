@@ -4,6 +4,7 @@
 package procvariables
 
 import (
+	"log/slog"
 	"os"
 
 	zbaction "github.com/zeabur/action"
@@ -24,7 +25,8 @@ func WithProcVariables(key string, value string) zbaction.ExecutorOptionsFn {
 func WithEnvBuildkitHost() zbaction.ExecutorOptionsFn {
 	host := os.Getenv("BUILDKIT_HOST")
 	if host == "" {
-		panic("buildkit host is not set")
+		slog.Error("buildkit host is not set", slog.String("variable", "BUILDKIT_HOST"))
+		os.Exit(1) // do not panic
 	}
 
 	return WithProcVariables(VarBuildkitHostKey, host)
