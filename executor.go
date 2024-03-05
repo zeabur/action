@@ -36,6 +36,8 @@ func RunAction(ctx context.Context, action Action, options ...ExecutorOptionsFn)
 	ac := &ActionContext{
 		variables: variables,
 		action:    &action,
+		stdout:    executorOptions.Stdout,
+		stderr:    executorOptions.Stderr,
 	}
 
 	type CleanupFnContext struct {
